@@ -118,7 +118,7 @@ powershell -ExecutionPolicy Bypass -File install.ps1 -GameDir "D:\SteamLibrary\s
 After starting the game once, open `BepInEx\LogOutput.log` in the game folder. It should contain:
 
 ```
-[Info   :R.E.P.O Trainer] R.E.P.O Trainer 1.0.0 by Zenato loaded. Menu key: Insert
+[Info   :R.E.P.O Trainer] R.E.P.O Trainer 1.0.1 by Zenato loaded. Menu key: Insert
 ```
 
 ## Usage

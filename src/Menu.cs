@@ -72,11 +72,13 @@ namespace RepoTrainer
 
         public static int TabCount => Tabs.Count;
 
-        /// <summary>Selects a tab and search text programmatically (used by the self-test build).</summary>
-        internal static void Select(int tab, string search)
+        /// <summary>Selects a tab, search text and scroll position programmatically (used by the self-test build).</summary>
+        internal static void Select(int tab, string search, float scroll = 0f)
         {
             _tab = Mathf.Clamp(tab, 0, Tabs.Count - 1);
             _search = search ?? "";
+            Tabs[_tab].ScrollTarget = scroll;
+            Anim.Snap("menu.scroll" + _tab, scroll);
         }
 
         public static void CollectAllActive(List<string> list)
@@ -396,7 +398,7 @@ namespace RepoTrainer
             Ui.Interactive = IsOpen;
             Ui.SetFilter(searching ? _search : null);
             float start = -scroll + (1f - fade) * 10f;
-            Ui.Y = start;
+            Ui.Y = Ui.Top = start;
             if (searching)
             {
                 foreach (var t in Tabs)

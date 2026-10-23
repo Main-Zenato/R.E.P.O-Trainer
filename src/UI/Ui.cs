@@ -26,6 +26,7 @@ namespace RepoTrainer.UI
         public static string HostOnlyMessage => L.T("Réservé à l'hôte de la partie.", "Only the host can do this.");
 
         public float Y;
+        public float Top;            // Y of the first row, scroll included
         public float Width;
         public Rect Clip;            // visible region, in group coordinates
         public bool Interactive;     // false while the window is animating closed
@@ -103,7 +104,7 @@ namespace RepoTrainer.UI
         {
             if (_pendingTab != null)
             {
-                Y += Y > 0 ? 14 : 0;
+                Y += Y > Top + 0.5f ? 14 : 0;
                 var r = new Rect(0, Y, Width, 26);
                 if (Visible(r))
                 {
@@ -145,7 +146,8 @@ namespace RepoTrainer.UI
 
         private void DrawSection(string title)
         {
-            Y += Y > 0 ? 20 : 2;
+            // Compared with where the content starts, not with 0: once scrolled, Y is negative.
+            Y += Y > Top + 0.5f ? 20 : 2;
             var r = new Rect(0, Y, Width, 20);
             if (Visible(r))
             {

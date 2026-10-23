@@ -104,6 +104,9 @@ namespace RepoTrainer
                 Menu.Select(i, "");
                 yield return Shot($"1{i}_tab");
             }
+            // Scrolled to the very end: the last row of a long tab must be fully visible.
+            Menu.Select(0, "", 99999f);
+            yield return Shot("19_player_bottom");
             Menu.Select(0, "argent");
             yield return Shot("20_search_argent");
             Menu.Select(0, "zzzz");
