@@ -359,6 +359,15 @@ namespace RepoTrainer
                 $"{Spawner.Enemies[0].Name}: {enemiesBefore} -> {EnemyDirector.instance.enemiesSpawned.Count}");
             Menu.Open(); Menu.Select(4, "");
             yield return Shot("76_spawn_tab");
+            string word = Spawner.Valuables[0].Name.Split(' ')[0].ToUpperInvariant();
+            int found = 0;
+            foreach (var v in Spawner.Valuables) if (Ui.Contains(v.Name, word)) found++;
+            Check("spawn search", found > 0 && found < Spawner.Valuables.Count && !Ui.Contains("Zzz", word), $"\"{word}\": {found} of {Spawner.Valuables.Count} valuables");
+            Spawner.Query = word;
+            yield return Shot("76b_spawn_search");
+            Spawner.Query = "zzzz";
+            yield return Shot("76c_spawn_search_empty");
+            Spawner.Query = "";
             Menu.Close();
 
             // ---- Gather (solo: only the local robot) ----

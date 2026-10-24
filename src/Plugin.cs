@@ -10,7 +10,7 @@ namespace RepoTrainer
     public sealed class Plugin : BaseUnityPlugin
     {
         public const string Guid = "zen.repo.trainer";
-        public const string Version = "1.0.1";
+        public const string Version = "1.0.2";
 
         private Harmony _harmony;
 

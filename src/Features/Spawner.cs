@@ -29,6 +29,7 @@ namespace RepoTrainer.Features
         private static bool _built;
         private static Kind _kind;
         private static int _amount = 1;
+        internal static string Query = "";   // the tab's own search box
 
         /// <summary>Reads the catalogues once; the game's ScriptableObjects don't change during a session.</summary>
         internal static void Build()
@@ -185,39 +186,58 @@ namespace RepoTrainer.Features
                     new Btn(L.T("Objets de valeur", "Valuables"), _kind == Kind.Valuables ? ButtonKind.Primary : ButtonKind.Secondary),
                     new Btn(L.T("Ennemis", "Enemies"), _kind == Kind.Enemies ? ButtonKind.Primary : ButtonKind.Secondary));
                 if (k >= 0) _kind = (Kind)k;
+                Query = ui.TextField("spawn.search", L.T("Rechercher un nom", "Search a name"), Query, 260);
             }
             if (!host) ui.Note(L.T("Seul l'hôte peut créer des objets et des ennemis.", "Only the host can create objects and enemies."), Theme.Alarm);
             if (!inGame) { ui.Empty(L.T("Lance une partie pour voir les listes.", "Start a game to see the lists.")); return; }
 
-            // While searching every list is shown so a name can be found from any category.
-            if (ui.Searching || _kind == Kind.Items)
+            // The menu's search already filters rows; the tab's own box only applies outside it.
+            string q = ui.Searching ? "" : Query.Trim();
+            bool all = ui.Searching || q.Length > 0;
+            if (q.Length > 0 && Count(Items, q) + Count(Valuables, q) + Count(Enemies, q) == 0)
             {
-                ui.Section(L.T("Objets et armes", "Items and weapons") + "  ·  " + Items.Count);
+                ui.Empty(L.T($"Aucun objet ni ennemi ne contient « {q} ».", $"No object or enemy contains \"{q}\"."));
+                return;
+            }
+
+            // While searching every list is shown so a name can be found from any category.
+            if (all ? Count(Items, q) > 0 : _kind == Kind.Items)
+            {
+                ui.Section(L.T("Objets et armes", "Items and weapons") + "  ·  " + Count(Items, q));
                 foreach (var e in Items)
-                    if (ui.ListRow("spawn.i." + e.Name, e.Name, ItemType(e.Item), lockFrom, Theme.Signal, new Btn(L.T("Créer", "Spawn"), ButtonKind.Primary)) == 0)
+                    if (Ui.Contains(e.Name, q) && ui.ListRow("spawn.i." + e.Name, e.Name, ItemType(e.Item), lockFrom, Theme.Signal, new Btn(L.T("Créer", "Spawn"), ButtonKind.Primary)) == 0)
                         SpawnObject(e);
             }
-            if (ui.Searching || _kind == Kind.Valuables)
+            if (all ? Count(Valuables, q) > 0 : _kind == Kind.Valuables)
             {
-                ui.Section(L.T("Objets de valeur", "Valuables") + "  ·  " + Valuables.Count);
-                if (ui.Buttons("spawn.v.random", !host, L.T("Un au hasard", "A random one")) == 0 && Valuables.Count > 0)
+                ui.Section(L.T("Objets de valeur", "Valuables") + "  ·  " + Count(Valuables, q));
+                if (q.Length == 0 && ui.Buttons("spawn.v.random", !host, L.T("Un au hasard", "A random one")) == 0 && Valuables.Count > 0)
                     SpawnObject(Valuables[Random.Range(0, Valuables.Count)]);
                 foreach (var e in Valuables)
                 {
+                    if (!Ui.Contains(e.Name, q)) continue;
                     string caption = L.T("Taille : ", "Size: ") + (L.French ? SizeFr[e.Size] : SizeEn[e.Size]);
                     if (ui.ListRow("spawn.v." + e.Name, e.Name, caption, lockFrom, Theme.Amber, new Btn(L.T("Créer", "Spawn"), ButtonKind.Primary)) == 0)
                         SpawnObject(e);
                 }
             }
-            if (ui.Searching || _kind == Kind.Enemies)
+            if (all ? Count(Enemies, q) > 0 : _kind == Kind.Enemies)
             {
-                ui.Section(L.T("Ennemis", "Enemies") + "  ·  " + Enemies.Count);
+                ui.Section(L.T("Ennemis", "Enemies") + "  ·  " + Count(Enemies, q));
                 ui.Note(L.T("Ils apparaissent sur un point de passage à quelques dizaines de mètres, jamais dans le camion.",
                     "They appear on a waypoint a few dozen metres away, never in the truck."));
                 foreach (var e in Enemies)
-                    if (ui.ListRow("spawn.e." + e.Name, e.Name, L.T("Difficulté ", "Difficulty ") + e.Tier, lockFrom, Theme.Alarm, new Btn(L.T("Créer", "Spawn"), ButtonKind.Danger)) == 0)
+                    if (Ui.Contains(e.Name, q) && ui.ListRow("spawn.e." + e.Name, e.Name, L.T("Difficulté ", "Difficulty ") + e.Tier, lockFrom, Theme.Alarm, new Btn(L.T("Créer", "Spawn"), ButtonKind.Danger)) == 0)
                         SpawnEnemy(e);
             }
+        }
+
+        private static int Count(List<Entry> list, string q)
+        {
+            if (q.Length == 0) return list.Count;
+            int n = 0;
+            foreach (var e in list) if (Ui.Contains(e.Name, q)) n++;
+            return n;
         }
 
         public static void CollectActive(List<string> list) { }

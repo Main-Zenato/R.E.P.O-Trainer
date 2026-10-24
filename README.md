@@ -49,7 +49,7 @@ Made by **Zenato**.
 - Infinite battery, unbreakable valuables and value ×2 / ×5 *(host)*.
 
 **Spawn** *(host)*
-- Any shop item or weapon (59), any valuable from every level (157), any enemy (50), searchable.
+- Any shop item or weapon (59), any valuable from every level (157), any enemy (50), with its own search box that looks through all three lists at once.
 - Up to 10 copies per click, laid out in front of you; enemies appear on a nearby waypoint.
 
 **Run** *(host)*
@@ -118,7 +118,7 @@ powershell -ExecutionPolicy Bypass -File install.ps1 -GameDir "D:\SteamLibrary\s
 After starting the game once, open `BepInEx\LogOutput.log` in the game folder. It should contain:
 
 ```
-[Info   :R.E.P.O Trainer] R.E.P.O Trainer 1.0.1 by Zenato loaded. Menu key: Insert
+[Info   :R.E.P.O Trainer] R.E.P.O Trainer 1.0.2 by Zenato loaded. Menu key: Insert
 ```
 
 ## Usage
@@ -260,7 +260,7 @@ option dans tous les onglets.
 - **Ennemis** : liste, figer, tuer, renvoyer, invisible pour les ennemis.
 - **Objets** : objets les plus chers, tout amener devant soi, batterie infinie, objets incassables, valeur ×2 ou ×5.
 - **Partie** : argent, améliorations, niveau suivant.
-- **Apparition** : n'importe quel objet ou arme (59), objet de valeur (157) ou ennemi (50), jusqu'à 10 à la fois.
+- **Apparition** : n'importe quel objet ou arme (59), objet de valeur (157) ou ennemi (50), jusqu'à 10 à la fois, avec une recherche par nom dans les trois listes.
 - **Équipe** : rejoindre, soigner, amener vers soi, ranimer, améliorer et expulser les joueurs ; tout le monde vers moi, au camion ou à l'extraction ; équipe invisible.
 - **Téléportation** : viseur, camion, extraction, 5 emplacements par niveau.
 - **Cosmétiques** : jetons de toutes raretés, déblocage de tous les cosmétiques (définitif, double clic).

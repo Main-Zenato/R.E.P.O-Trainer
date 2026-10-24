@@ -51,6 +51,10 @@ namespace RepoTrainer.UI
 
         private static readonly Dictionary<string, string> NormCache = new Dictionary<string, string>();
 
+        /// <summary>Loose match for a tab's own search box: case and accents ignored, anywhere in the name.</summary>
+        public static bool Contains(string name, string query) =>
+            string.IsNullOrWhiteSpace(query) || Normalize(name).Contains(Normalize(query.Trim()));
+
         private static string Normalize(string s)
         {
             if (s == null) return "";
@@ -414,6 +418,9 @@ namespace RepoTrainer.UI
             var r = new Rect(0, Y, Width, h);
             Y += h;
             int clicked = -1;
+            // The hover band goes under the buttons, otherwise it covers them.
+            bool visible = Visible(r);
+            if (visible) RowChrome(id, r, Hover(r));
             // Buttons grow to fit their label, laid out right to left.
             float x = r.xMax;
             for (int i = buttons.Length - 1; i >= 0; i--)
@@ -424,8 +431,7 @@ namespace RepoTrainer.UI
                 if (Button(id + ".b" + i, br, buttons[i], i >= lockFrom)) clicked = i;
                 x -= gap;
             }
-            if (!Visible(r)) return clicked;
-            RowChrome(id, r, Hover(r));
+            if (!visible) return clicked;
             float tx = r.x + 2;
             if (accent.HasValue)
             {
